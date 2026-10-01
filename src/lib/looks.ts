@@ -511,7 +511,12 @@ export const ALL_TOOLS = [
 
 export const DEFAULT_TOOLS = ["气垫", "眼影盘", "腮红刷", "眉笔", "睫毛膏", "口红", "棉签"];
 
-export function minutesOf(plan: PartPlan[]) {
-  const s = plan.filter((p) => p.included).reduce((acc, p) => acc + p.steps.reduce((a, st) => a + st.durationS, 0), 0);
+/** 步骤时长只计动作本身，乘 2.2 估算含取色、对镜确认在内的真实耗时 */
+export function minutesOfSteps(steps: { durationS: number }[]) {
+  const s = steps.reduce((a, st) => a + st.durationS, 0);
   return Math.max(1, Math.round((s * 2.2) / 60));
+}
+
+export function minutesOf(plan: PartPlan[]) {
+  return minutesOfSteps(plan.filter((p) => p.included).flatMap((p) => p.steps));
 }

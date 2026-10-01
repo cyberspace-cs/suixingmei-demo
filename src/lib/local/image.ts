@@ -1,5 +1,6 @@
-import type { ImageQuality } from "../types";
+import type { FaceShape, ImageQuality, PartKey } from "../types";
 import type { ColorHint } from "../engine";
+import { FACE_H, FACE_W, revealLayers, type Landmarks, type RevealLayer } from "../face-geometry";
 
 export const MAX_UPLOAD_MB = 15;
 
@@ -146,12 +147,53 @@ export function seedFrom(text: string): number {
   return Math.abs(h);
 }
 
-/** 从 <video> 或演示画面截取一帧（演示画面 = 妆前图 + 按进度叠加妆后图） */
+function revealMask(width: number, height: number, layers: RevealLayer[]) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d")!;
+  const k = width / FACE_W;
+  ctx.scale(k, height / FACE_H);
+  ctx.filter = `blur(${Math.max(2, 9 * k)}px)`;
+  for (const l of layers) {
+    ctx.save();
+    ctx.globalAlpha = l.alpha;
+    ctx.globalCompositeOperation = l.mode === "show" ? "source-over" : "destination-out";
+    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = "#fff";
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    const s = l.shape;
+    if (s.ellipse) {
+      const e = s.ellipse;
+      ctx.beginPath();
+      ctx.ellipse(e.cx, e.cy, e.rx * 1.08, e.ry * 1.08, (e.rotate * Math.PI) / 180, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (s.d) {
+      const path = new Path2D(s.d);
+      if (s.kind === "fill") {
+        ctx.fill(path);
+        if (l.part !== "base") {
+          ctx.lineWidth = 14;
+          ctx.stroke(path);
+        }
+      } else {
+        ctx.lineWidth = (s.width ?? 8) * l.grow;
+        ctx.stroke(path);
+      }
+    }
+    ctx.restore();
+  }
+  return canvas;
+}
+
+/** 从 <video> 或演示画面截取一帧（演示画面 = 妆前图 + 已完成部位的妆后效果） */
 export async function captureFrame(opts: {
   video?: HTMLVideoElement | null;
   bare?: string;
   after?: string;
   afterOpacity?: number;
+  reveal?: { parts: PartKey[]; landmarks: Landmarks; shape: FaceShape };
   mirrored?: boolean;
   width?: number;
 }): Promise<string> {
@@ -176,7 +218,17 @@ export async function captureFrame(opts: {
   } else if (opts.bare) {
     const bare = await loadImage(opts.bare);
     ctx.drawImage(bare, 0, 0, width, height);
-    if (opts.after && (opts.afterOpacity ?? 0) > 0) {
+    if (opts.after && opts.reveal) {
+      const after = await loadImage(opts.after);
+      const layer = document.createElement("canvas");
+      layer.width = width;
+      layer.height = height;
+      const lctx = layer.getContext("2d")!;
+      lctx.drawImage(after, 0, 0, width, height);
+      lctx.globalCompositeOperation = "destination-in";
+      lctx.drawImage(revealMask(width, height, revealLayers(opts.reveal.parts, opts.reveal.landmarks, opts.reveal.shape)), 0, 0);
+      ctx.drawImage(layer, 0, 0);
+    } else if (opts.after && (opts.afterOpacity ?? 0) > 0) {
       const after = await loadImage(opts.after);
       ctx.globalAlpha = opts.afterOpacity ?? 0;
       ctx.drawImage(after, 0, 0, width, height);

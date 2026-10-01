@@ -5,10 +5,12 @@ import {
   FACE_H,
   FACE_W,
   PART_COLOR,
+  revealLayers,
   scanPoints,
   zonesFor,
   type Landmarks,
   type Pt,
+  type RevealLayer,
 } from "@/lib/face-geometry";
 import type { FaceShape, PartKey } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -30,10 +32,28 @@ export interface PinSpec extends Pt {
   active?: boolean;
 }
 
+function MaskShape({ layer }: { layer: RevealLayer }) {
+  const color = layer.mode === "show" ? "#fff" : "#000";
+  const style = layer.mode === "show" ? { animation: "reveal-in 1.1s ease both" } : undefined;
+  const s = layer.shape;
+  if (s.ellipse) {
+    const e = s.ellipse;
+    return (
+      <ellipse cx={e.cx} cy={e.cy} rx={e.rx * 1.08} ry={e.ry * 1.08} transform={`rotate(${e.rotate} ${e.cx} ${e.cy})`} fill={color} opacity={layer.alpha} style={style} />
+    );
+  }
+  if (s.kind === "fill") {
+    return <path d={s.d} fill={color} stroke={color} strokeWidth={layer.part === "base" ? 0 : 14} strokeLinejoin="round" opacity={layer.alpha} style={style} />;
+  }
+  return <path d={s.d} fill="none" stroke={color} strokeWidth={(s.width ?? 8) * layer.grow} strokeLinecap="round" opacity={layer.alpha} style={style} />;
+}
+
 interface Props {
   src?: string;
   after?: string;
   afterOpacity?: number;
+  /** 传入后改为按部位逐个显露妆后图，afterOpacity 失效 */
+  reveal?: PartKey[];
   landmarks: Landmarks;
   shape: FaceShape;
   viewBox?: string;
@@ -51,6 +71,7 @@ export function FaceCanvas({
   src,
   after,
   afterOpacity = 0,
+  reveal,
   landmarks,
   shape,
   viewBox = `0 0 ${FACE_W} ${FACE_H}`,
@@ -90,7 +111,25 @@ export function FaceCanvas({
       </defs>
 
       {src && <image href={src} width={FACE_W} height={FACE_H} preserveAspectRatio="xMidYMid slice" className={imageClassName} />}
-      {after && (
+      {after && reveal && (
+        <>
+          <defs>
+            <filter id={`mblur-${uid}`} x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+            <mask id={`reveal-${uid}`} maskUnits="userSpaceOnUse" x={0} y={0} width={FACE_W} height={FACE_H}>
+              <g filter={`url(#mblur-${uid})`}>
+                {revealLayers(reveal, landmarks, shape).map((l, i) => (
+                  <MaskShape key={`${l.part}-${l.mode}-${i}`} layer={l} />
+                ))}
+              </g>
+            </mask>
+            <style>{`@keyframes reveal-in{from{opacity:0}}`}</style>
+          </defs>
+          <image href={after} width={FACE_W} height={FACE_H} preserveAspectRatio="xMidYMid slice" mask={`url(#reveal-${uid})`} />
+        </>
+      )}
+      {after && !reveal && (
         <image
           href={after}
           width={FACE_W}
