@@ -105,13 +105,20 @@ export function AfterCapture({
             className="absolute inset-0 h-full w-full object-cover"
             style={{ transform: mirrored ? "scaleX(-1)" : undefined }}
           />
-        ) : demoSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={demoSrc} alt="演示妆后画面" className="absolute inset-0 h-full w-full object-cover opacity-90" />
         ) : (
-          <div className="absolute inset-0 grid place-items-center text-ink/35">
-            <ImagePlus className="size-10" />
-          </div>
+          <>
+            {demoSrc && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={demoSrc} alt="" aria-hidden className="absolute inset-0 h-full w-full scale-105 object-cover opacity-30 blur-[3px] saturate-50" />
+            )}
+            <div className="absolute inset-x-6 top-1/2 grid -translate-y-1/2 place-items-center text-center">
+              <span className="grid size-12 place-items-center rounded-full bg-white/80 text-ink shadow-sm">
+                <ImagePlus className="size-5" />
+              </span>
+              <p className="mt-3 text-sm font-medium text-ink">还没有妆后照</p>
+              <p className="mt-1 max-w-[220px] text-xs leading-relaxed text-ink/60">正对镜头，光线和角度尽量和素颜照一致，评分更准</p>
+            </div>
+          </>
         )}
         <svg viewBox="0 0 300 400" className="pointer-events-none absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden>
           <ellipse cx="150" cy="185" rx="92" ry="122" fill="none" stroke="#fff" strokeWidth="2" strokeDasharray="6 6" opacity="0.85" />
@@ -127,7 +134,7 @@ export function AfterCapture({
             </>
           ) : (
             <>
-              <Sparkles className="size-3.5" /> {demoSrc ? "演示画面 · 化好妆的你" : "把脸放进虚线框"}
+              <Sparkles className="size-3.5" /> 把脸放进虚线框
             </>
           )}
         </span>

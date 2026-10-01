@@ -219,7 +219,7 @@ function CompleteSession({ session }: { session: Session }) {
                     {[
                       { k: "用时", v: formatElapsed(session.elapsedS) },
                       { k: "完成小步", v: `${stepsDone}/${allSteps.length}` },
-                      { k: "帮我看看", v: `${checksGood}/${session.checks.length} 通过` },
+                      { k: "帮我看看", v: session.checks.length ? `${checksGood}/${session.checks.length} 通过` : "没用到" },
                     ].map((s) => (
                       <div key={s.k} className="rounded-2xl bg-white/70 px-3 py-3">
                         <div className="text-[11px] text-ink/50">{s.k}</div>

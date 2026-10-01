@@ -515,7 +515,7 @@ function FollowSession({ session, parts }: { session: Session; parts: PartPlan[]
         </div>
       </main>
 
-      <AssistantDock {...dockProps} className="fixed inset-x-3 bottom-3 z-40 lg:hidden" />
+      <AssistantDock {...dockProps} className="fixed inset-x-3 bottom-3 z-40 bg-white/95 lg:hidden" />
 
       <PrepDialog
         open={prepOpen}

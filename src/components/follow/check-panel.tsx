@@ -109,7 +109,13 @@ export function CheckPanel(props: {
 
         {flow.phase === "result" && (
           <div className="space-y-3">
-            <CheckPhoto image={flow.record.image} part={flow.record.part} landmarkSet={flow.record.landmarkSet} result={flow.record} className="aspect-[2/1] rounded-2xl" />
+            <CheckPhoto
+              image={flow.record.image}
+              part={flow.record.part}
+              landmarkSet={flow.record.landmarkSet}
+              result={flow.record}
+              className="aspect-[2/1] rounded-2xl lg:aspect-[5/2]"
+            />
             <div className="rounded-2xl bg-white/70 p-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="font-medium text-ink">{flow.record.summary}</p>
@@ -119,8 +125,8 @@ export function CheckPanel(props: {
                 <CheckItems result={flow.record} />
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={props.onStart} className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-ink/15 bg-white/70 text-sm text-ink/80 hover:bg-white">
+            <div className="sticky bottom-0 z-10 -mx-1.5 flex gap-2 bg-gradient-to-t from-[#f7f4fa] via-[#f7f4fa]/90 to-transparent px-1.5 pb-1 pt-3">
+              <button onClick={props.onStart} className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-ink/15 bg-white/90 text-sm text-ink/80 hover:bg-white">
                 <RefreshCw className="size-4" /> 改好了，再拍一张
               </button>
               <button onClick={props.onBack} className="btn-ink inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full text-sm">
