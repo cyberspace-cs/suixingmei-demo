@@ -4,6 +4,8 @@
 
 这个仓库是 PRD 2.0 的可点击 Demo，所有 AI / 摄像头 / 语音能力都有**本地 mock 或降级实现**，不需要任何 API Key 就能完整走通。
 
+在线体验：<https://elizabettgoodman-art.github.io/suixingmei-demo/>（GitHub Pages，`main` 分支每次 push 自动部署）
+
 ## 本地运行
 
 需要 Node.js 20+。
@@ -18,8 +20,22 @@ npm run dev        # http://localhost:4317
 | 命令 | 作用 |
 | --- | --- |
 | `npm run build && npm start` | 生产构建并在 4317 端口启动 |
+| `npm run build:pages` | GitHub Pages 静态构建，输出到 `out/` |
 | `npm run lint` | ESLint（含 React Compiler 规则） |
 | `npm run typecheck` | TypeScript 检查 |
+
+## 部署到 GitHub Pages
+
+`.github/workflows/deploy-pages.yml` 在每次 push 到 `main` 时运行 `npm run build:pages`，把 `out/` 发布到 GitHub Pages（仓库 Settings → Pages 的 Source 为 GitHub Actions）。
+
+`build:pages` 设置 `GITHUB_PAGES=true`，`next.config.ts` 只在这个开关下启用：
+
+- `output: "export"` 纯静态导出，`trailingSlash: true`（每个页面输出为 `xxx/index.html`，刷新子页面不会 404）
+- `basePath: "/suixingmei-demo"`（可用 `PAGES_BASE_PATH` 覆盖）；`public/` 下的图片通过 `src/lib/utils.ts` 的 `asset()` 补上前缀
+- `images.unoptimized`，以及 `pageExtensions: ["tsx"]`：静态托管跑不了 `route.ts`，mock API 不参与导出
+- 客户端改为在浏览器内直接调用 `src/lib/server/handlers.ts`（与 API 路由同一套 mock，保留延迟和演示场景），见 `src/lib/api.ts`
+
+`npm run dev`、`npm run build` 不受影响，仍走 `/api/v2/sessions/...`。
 
 技术栈：Next.js 16（App Router）· React 19 · TypeScript · Tailwind CSS v4 · shadcn/ui（Base UI）· zustand（本机持久化）。
 
