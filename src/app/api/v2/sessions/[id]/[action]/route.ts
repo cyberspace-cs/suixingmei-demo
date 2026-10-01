@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { HttpError, handlers } from "@/lib/server/handlers";
 import type { DemoScenario } from "@/lib/types";
 
-export async function POST(req: NextRequest, ctx: RouteContext<"/api/v2/sessions/[id]/[action]">) {
+export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string; action: string }> }) {
   const { id, action } = await ctx.params;
   const handler = handlers[action];
   if (!handler) return NextResponse.json({ error: "unknown_action" }, { status: 404 });

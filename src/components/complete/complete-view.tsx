@@ -20,7 +20,7 @@ import { formatElapsed } from "@/lib/format";
 import { PARTS } from "@/lib/looks";
 import { useApp, useCurrentSession } from "@/lib/store";
 import type { CheckRecord, ImageQuality, Session } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 export function CompleteView() {
   const hydrated = useApp((s) => s.hydrated);
@@ -79,7 +79,7 @@ function CompleteSession({ session }: { session: Session }) {
   const partsLeft = parts.filter((p) => !p.steps.every((s) => done.includes(s.id)));
   const checksGood = session.checks.filter((c) => c.status === "good").length;
   const scored = !!session.score && !!session.afterImage;
-  const demoSrc = session.selfieSample ? "/images/user-after.jpg" : undefined;
+  const demoSrc = session.selfieSample ? asset("/images/user-after.jpg") : undefined;
   const qualityWarn = draft && !draft.quality.ok && !draft.accepted;
 
   const runScore = async () => {

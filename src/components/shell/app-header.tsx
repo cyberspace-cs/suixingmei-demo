@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useApp } from "@/lib/store";
 import type { DemoScenario } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
 const NAV = [
@@ -34,7 +34,8 @@ export const SCENARIOS: { value: DemoScenario; label: string; hint: string }[] =
 ];
 
 export function AppHeader({ className }: { className?: string }) {
-  const pathname = usePathname();
+  // trailingSlash 构建（GitHub Pages）下 usePathname 带结尾斜杠
+  const pathname = usePathname().replace(/(.)\/$/, "$1");
   const router = useRouter();
   const scenario = useApp((s) => s.settings.scenario);
   const setSettings = useApp((s) => s.setSettings);
@@ -83,7 +84,7 @@ export function AppHeader({ className }: { className?: string }) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/user-bare.jpg"
+              src={asset("/images/user-bare.jpg")}
               alt=""
               className="size-10 rounded-full border-2 border-white object-cover object-[50%_35%] shadow-sm"
             />

@@ -27,6 +27,29 @@ export class ApiError extends Error {
 
 const rid = () => (typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : String(Date.now()));
 
+/** GitHub Pages 静态版没有 /api 路由 */
+const STATIC_EXPORT = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
+/** 在浏览器内直接跑与 route.ts 相同的 mock handler，保留模拟延迟和演示场景 */
+async function callInBrowser<T>(
+  sessionId: string,
+  action: string,
+  body: Record<string, unknown>,
+  scenario: DemoScenario,
+): Promise<T> {
+  const { HttpError, handlers } = await import("./server/handlers");
+  const handler = handlers[action];
+  if (!handler) throw new ApiError(404, "unknown_action");
+  const requestId = rid();
+  try {
+    const data = await handler({ ...body, request_id: requestId }, scenario);
+    return { session_id: sessionId, request_id: requestId, ...(data as object) } as T;
+  } catch (err) {
+    if (err instanceof HttpError) throw new ApiError(err.status, err.code);
+    throw new ApiError(500, "internal_error");
+  }
+}
+
 async function call<T>(
   sessionId: string,
   action: string,
@@ -34,6 +57,7 @@ async function call<T>(
   scenario: DemoScenario,
   timeoutMs = 12000,
 ): Promise<T> {
+  if (STATIC_EXPORT) return callInBrowser<T>(sessionId, action, body, scenario);
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -55,6 +79,7 @@ async function call<T>(
 }
 
 export async function createSession(): Promise<string> {
+  if (STATIC_EXPORT) return `s_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
   try {
     const res = await fetch("/api/v2/sessions", { method: "POST" });
     const data = await res.json();

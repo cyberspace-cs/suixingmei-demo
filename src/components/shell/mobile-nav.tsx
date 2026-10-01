@@ -12,7 +12,8 @@ const ITEMS = [
 ];
 
 export function MobileNav() {
-  const pathname = usePathname();
+  // trailingSlash 构建（GitHub Pages）下 usePathname 带结尾斜杠
+  const pathname = usePathname().replace(/(.)\/$/, "$1");
   return (
     <nav className="glass-strong fixed inset-x-3 bottom-3 z-40 flex h-16 items-center justify-around rounded-2xl md:hidden" aria-label="底部导航">
       {ITEMS.map(({ href, label, icon: Icon }) => {

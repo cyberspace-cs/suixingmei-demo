@@ -19,6 +19,7 @@ import { analyzeQuality, captureFrame } from "@/lib/local/image";
 import { minutesOfSteps, stepFocus } from "@/lib/looks";
 import { landmarkSetOf, useApp, useCurrentSession } from "@/lib/store";
 import type { ChatMessage, CheckRecord, ImageQuality, PartKey, PartPlan, Session } from "@/lib/types";
+import { asset } from "@/lib/utils";
 import { AssistantDock, type DockPrimary } from "./assistant-dock";
 import { ChatPanel } from "./chat-panel";
 import { CheckPanel, type CheckFlow } from "./check-panel";
@@ -122,7 +123,7 @@ function FollowSession({ session, parts }: { session: Session; parts: PartPlan[]
   const remainingMin = minutesOfSteps(allSteps.filter((s) => !done.includes(s.id)));
   const landmarkSet = landmarkSetOf(session);
   const L = LANDMARKS[landmarkSet];
-  const afterSrc = session.selfieSample ? "/images/user-after.jpg" : undefined;
+  const afterSrc = session.selfieSample ? asset("/images/user-after.jpg") : undefined;
   const startedParts = useMemo(() => parts.filter((p) => p.steps.some((s) => done.includes(s.id))).map((p) => p.key), [parts, done]);
   const prepOpen = session.status !== "following";
 

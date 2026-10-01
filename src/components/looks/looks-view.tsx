@@ -17,6 +17,7 @@ import { formatDay } from "@/lib/format";
 import { LOOKS } from "@/lib/looks";
 import { useApp } from "@/lib/store";
 import type { SavedLook } from "@/lib/types";
+import { asset } from "@/lib/utils";
 
 function LookCard({ look }: { look: SavedLook }) {
   const router = useRouter();
@@ -28,8 +29,8 @@ function LookCard({ look }: { look: SavedLook }) {
     const st = useApp.getState();
     st.setReference({ src: preset.referenceImage, sample: true, sampleLook: look.lookId, name: look.lookName });
     if (!st.selfie) {
-      const src = st.sessions[0]?.selfieImage ?? "/images/user-bare.jpg";
-      st.setSelfie({ src, sample: src === "/images/user-bare.jpg", quality: await analyzeQuality(src) });
+      const src = st.sessions[0]?.selfieImage ?? asset("/images/user-bare.jpg");
+      st.setSelfie({ src, sample: src === asset("/images/user-bare.jpg"), quality: await analyzeQuality(src) });
     }
     router.push("/?auto=1");
   };

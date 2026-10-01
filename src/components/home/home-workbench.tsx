@@ -11,7 +11,7 @@ import { PageSkeleton } from "@/components/common/empty-state";
 import { useAnalysis } from "@/hooks/use-analysis";
 import { analyzeQuality } from "@/lib/local/image";
 import { useApp, useCurrentSession } from "@/lib/store";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 import { AnalysisPanel } from "./analysis-panel";
 import { CenterStage } from "./center-stage";
 import { UploadCard } from "./upload-card";
@@ -42,15 +42,15 @@ export function HomeWorkbench() {
     if (!hydrated || autoRan.current) return;
     if (new URLSearchParams(window.location.search).get("auto") === "1" && reference && selfie && !matches) {
       autoRan.current = true;
-      window.history.replaceState(null, "", "/");
+      window.history.replaceState(null, "", window.location.pathname);
       start();
     }
   });
 
   const fillSamples = async () => {
-    setReference({ src: "/images/ref-peach.jpg", sample: true, sampleLook: "peach", name: "示例参考妆" });
-    const quality = await analyzeQuality("/images/user-bare.jpg");
-    setSelfie({ src: "/images/user-bare.jpg", sample: true, name: "示例自拍", quality });
+    setReference({ src: asset("/images/ref-peach.jpg"), sample: true, sampleLook: "peach", name: "示例参考妆" });
+    const quality = await analyzeQuality(asset("/images/user-bare.jpg"));
+    setSelfie({ src: asset("/images/user-bare.jpg"), sample: true, name: "示例自拍", quality });
   };
 
   const goFollow = () => {

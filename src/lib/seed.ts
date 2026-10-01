@@ -1,6 +1,7 @@
 import * as engine from "./engine";
 import { LOOKS, buildPlan, DEFAULT_TOOLS } from "./looks";
 import type { CheckRecord, LookId, PartKey, SavedLook, Session } from "./types";
+import { asset } from "./utils";
 
 const DAY = 86400000;
 
@@ -34,7 +35,7 @@ function seededSession(opts: {
       part: c.part,
       stepId: part.steps[part.steps.length - 1].id,
       stepTitle: part.steps[part.steps.length - 1].title,
-      image: "/images/user-after.jpg",
+      image: asset("/images/user-after.jpg"),
       createdAt: createdAt + c.minutesIn * 60000,
     };
   });
@@ -46,9 +47,9 @@ function seededSession(opts: {
     lookName: look.name,
     referenceImage: look.referenceImage,
     referenceSample: opts.lookId,
-    selfieImage: "/images/user-bare.jpg",
+    selfieImage: asset("/images/user-bare.jpg"),
     selfieSample: true,
-    afterImage: opts.completed ? "/images/user-after.jpg" : undefined,
+    afterImage: opts.completed ? asset("/images/user-after.jpg") : undefined,
     analysis,
     face,
     adapt,
@@ -126,7 +127,7 @@ export function seedData(): { sessions: Session[]; looks: SavedLook[] } {
       lookName: LOOKS.guofeng.name,
       styleLabel: LOOKS.guofeng.styleLabel,
       referenceImage: LOOKS.guofeng.referenceImage,
-      afterImage: "/images/user-after.jpg",
+      afterImage: asset("/images/user-after.jpg"),
       score: sessions[1].score?.total,
       savedAt: sessions[1].completedAt!,
     },
@@ -137,7 +138,7 @@ export function seedData(): { sessions: Session[]; looks: SavedLook[] } {
       lookName: LOOKS.milktea.name,
       styleLabel: LOOKS.milktea.styleLabel,
       referenceImage: LOOKS.milktea.referenceImage,
-      afterImage: "/images/user-after.jpg",
+      afterImage: asset("/images/user-after.jpg"),
       score: sessions[2].score?.total,
       savedAt: sessions[2].completedAt!,
     },

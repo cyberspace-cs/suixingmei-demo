@@ -1,5 +1,6 @@
 import type { Adjustment, FaceShape, LookId, PartKey, PartPlan, Swatch } from "./types";
 import type { LandmarkKey } from "./face-geometry";
+import { asset } from "./utils";
 
 interface StepTemplate {
   id: string;
@@ -282,7 +283,7 @@ export const LOOKS: Record<LookId, LookPreset> = {
     techniques: ["苹果肌腮红", "眼尾晕染", "咬唇点涂"],
     difficulty: 0.42,
     modelFaceShape: "oval",
-    referenceImage: "/images/ref-peach.jpg",
+    referenceImage: asset("/images/ref-peach.jpg"),
     defaultParts: ["base", "brow", "eyeshadow", "blush", "lip"],
     shades: {
       base: "自然色",
@@ -309,7 +310,7 @@ export const LOOKS: Record<LookId, LookPreset> = {
     techniques: ["上扬红眼尾", "花钿点缀", "饱满朱唇"],
     difficulty: 0.78,
     modelFaceShape: "long",
-    referenceImage: "/images/ref-guofeng.jpg",
+    referenceImage: asset("/images/ref-guofeng.jpg"),
     defaultParts: ["base", "brow", "eyeshadow", "eyeliner", "blush", "lip"],
     shades: {
       base: "冷白瓷",
@@ -336,7 +337,7 @@ export const LOOKS: Record<LookId, LookPreset> = {
     techniques: ["大地色眼影", "细眼线", "裸色唇"],
     difficulty: 0.35,
     modelFaceShape: "oval",
-    referenceImage: "/images/ref-milktea.jpg",
+    referenceImage: asset("/images/ref-milktea.jpg"),
     defaultParts: ["base", "brow", "eyeshadow", "eyeliner", "lip"],
     shades: {
       base: "自然色",
@@ -363,7 +364,7 @@ export const LOOKS: Record<LookId, LookPreset> = {
     techniques: ["平直眉", "冷调眼影", "雾面唇"],
     difficulty: 0.55,
     modelFaceShape: "heart",
-    referenceImage: "/images/ref-cool.jpg",
+    referenceImage: asset("/images/ref-cool.jpg"),
     defaultParts: ["base", "brow", "eyeshadow", "blush", "lip"],
     shades: {
       base: "冷调自然",

@@ -15,7 +15,7 @@ import { MAX_UPLOAD_MB, normalizePortrait, readFile } from "@/lib/local/image";
 import { LOOKS } from "@/lib/looks";
 import { useApp } from "@/lib/store";
 import type { ImageQuality, LookId, ScoreResult } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 import { AfterCapture } from "./after-capture";
 import { ScoringProgress } from "./scoring-progress";
 
@@ -35,7 +35,7 @@ function DirectScore() {
   const saveLook = useApp((s) => s.saveLook);
   const [beforeCandidate] = useState(() => {
     const st = useApp.getState();
-    return st.selfie?.src ?? st.sessions[0]?.selfieImage ?? "/images/user-bare.jpg";
+    return st.selfie?.src ?? st.sessions[0]?.selfieImage ?? asset("/images/user-bare.jpg");
   });
   const [after, setAfter] = useState<{ src: string; quality: ImageQuality; accepted?: boolean } | null>(null);
   const [before, setBefore] = useState<string | null>(beforeCandidate);
@@ -151,7 +151,7 @@ function DirectScore() {
                 </button>
               </div>
             ) : (
-              <AfterCapture demoSrc="/images/user-after.jpg" onCapture={(src, quality) => setAfter({ src, quality })} />
+              <AfterCapture demoSrc={asset("/images/user-after.jpg")} onCapture={(src, quality) => setAfter({ src, quality })} />
             )}
           </section>
 

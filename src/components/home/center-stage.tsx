@@ -5,7 +5,7 @@ import { FaceCanvas } from "@/components/common/face-canvas";
 import { LANDMARKS } from "@/lib/face-geometry";
 import type { DraftImage } from "@/lib/store";
 import type { Session } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 function Clover({ className }: { className?: string }) {
   return (
@@ -81,7 +81,7 @@ export function CenterStage({
           <div className="portrait-fade h-full w-full">
             <FaceCanvas
               src={src}
-              after={phase === "done" && session?.selfieSample ? "/images/user-after.jpg" : undefined}
+              after={phase === "done" && session?.selfieSample ? asset("/images/user-after.jpg") : undefined}
               afterOpacity={phase === "done" && view === "after" ? 1 : 0}
               landmarks={landmarks}
               shape={session?.face?.faceShape ?? "round"}

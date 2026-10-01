@@ -5,7 +5,7 @@ import { AlertTriangle, ArrowRight, Check, ImagePlus, Loader2, ShieldCheck, Uplo
 import { toast } from "sonner";
 import { MAX_UPLOAD_MB, analyzeQuality, normalizePortrait, readFile } from "@/lib/local/image";
 import { useApp, type DraftImage } from "@/lib/store";
-import { cn } from "@/lib/utils";
+import { asset, cn } from "@/lib/utils";
 
 interface Props {
   kind: "reference" | "selfie";
@@ -24,7 +24,7 @@ const COPY = {
     emptyTitle: "上传一张喜欢的妆容",
     emptyDesc: "小红书截图、杂志或视频截图都可以，正脸更准",
     button: "上传 / 更换参考图",
-    sample: "/images/ref-peach.jpg",
+    sample: asset("/images/ref-peach.jpg"),
   },
   selfie: {
     index: "02 / Your face",
@@ -34,7 +34,7 @@ const COPY = {
     emptyTitle: "拍一张素颜正面照",
     emptyDesc: "自然光、不开美颜、露出完整五官。只在本机分析",
     button: "上传 / 更换自拍",
-    sample: "/images/user-bare.jpg",
+    sample: asset("/images/user-bare.jpg"),
   },
 };
 
