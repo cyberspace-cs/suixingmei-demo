@@ -100,18 +100,19 @@ export function Mirror({
 
         <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-2">
           {mode === "camera" && cameraStatus === "live" ? (
-            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs text-ink">
+            <span className="glass-strong inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-xs text-ink">
               <span className="size-2 rounded-full bg-success shadow-[0_0_0_3px_rgba(63,155,110,0.2)]" />
               摄像头已开启
-              <span className="text-ink/40">·</span>
-              <Lock className="size-3 text-ink/50" /> <span className="text-ink/60">本机画面，不上传</span>
+              <span className="hidden text-ink/40 sm:inline">·</span>
+              <Lock className="hidden size-3 text-ink/50 sm:inline" /> <span className="hidden text-ink/60 sm:inline">本机画面，不上传</span>
             </span>
           ) : cameraStatus === "denied" || cameraStatus === "unavailable" ? (
             <Popover
               trigger={
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-warning/90 px-3 py-1.5 text-xs text-white shadow">
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-warning/90 px-3 py-1.5 text-xs text-white shadow">
                   <CameraOff className="size-3.5" />
-                  {cameraStatus === "denied" ? "摄像头未授权 · 演示画面" : "未检测到摄像头 · 演示画面"}
+                  {cameraStatus === "denied" ? "摄像头未授权" : "未检测到摄像头"}
+                  <span className="hidden sm:inline">· 演示画面</span>
                 </span>
               }
             >
@@ -126,13 +127,14 @@ export function Mirror({
               </button>
             </Popover>
           ) : (
-            <span className="glass-strong inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs text-ink/70">
-              <Sparkles className="size-3.5" /> 演示画面
+            <span className="glass-strong inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-xs text-ink/70">
+              <Sparkles className="size-3.5" /> <span className="hidden sm:inline">演示画面</span>
               {cameraStatus === "requesting" ? (
                 <Loader2 className="size-3 animate-spin" />
               ) : (
                 <button onClick={props.onRequestCamera} className="ml-1 font-medium text-ink underline underline-offset-2">
-                  开启摄像头
+                  <span className="sm:hidden">开摄像头</span>
+                  <span className="hidden sm:inline">开启摄像头</span>
                 </button>
               )}
             </span>
@@ -146,20 +148,22 @@ export function Mirror({
             )}
             <button
               onClick={props.onToggleOverlay}
-              className={cn("glass-strong inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-xs", props.showOverlay ? "text-ink" : "text-ink/50")}
+              className={cn("glass-strong inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 text-xs sm:px-3", props.showOverlay ? "text-ink" : "text-ink/50")}
               aria-pressed={props.showOverlay}
+              aria-label="涂抹示意"
             >
               {props.showOverlay ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
-              涂抹示意
+              <span className="hidden sm:inline">涂抹示意</span>
             </button>
             {mode === "demo" && (
               <button
                 onClick={props.onToggleZoom}
-                className="glass-strong inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-xs text-ink"
+                className="glass-strong inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 text-xs text-ink sm:px-3"
                 aria-pressed={props.zoom}
+                aria-label={props.zoom ? "看整脸" : "放大局部"}
               >
                 {props.zoom ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
-                {props.zoom ? "看整脸" : "放大局部"}
+                <span className="hidden sm:inline">{props.zoom ? "看整脸" : "放大局部"}</span>
               </button>
             )}
           </div>

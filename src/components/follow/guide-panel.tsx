@@ -54,11 +54,11 @@ export function GuidePanel(props: {
           )}
 
           <div className="mt-5 flex w-full max-w-sm flex-col gap-2 sm:flex-row">
-            <button onClick={props.onCheck} className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-ink/20 bg-white/70 text-sm text-ink hover:bg-white">
+            <button onClick={props.onCheck} className="inline-flex h-11 sm:flex-1 items-center justify-center gap-2 rounded-full border border-ink/20 bg-white/70 text-sm text-ink hover:bg-white">
               <Camera className="size-4" /> 帮我看看
             </button>
-            <button onClick={props.onNext} className="btn-ink inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full text-sm">
-              {props.nextPart ? `继续：${props.nextPart.label}` : "完成，去看结果"} <ArrowRight className="size-4" />
+            <button onClick={props.onNext} className="btn-ink inline-flex h-11 sm:flex-1 items-center justify-center gap-2 rounded-full text-sm">
+              {props.nextPart ? `继续：${props.nextPart.label}` : "完成，去拍妆后照"} <ArrowRight className="size-4" />
             </button>
           </div>
         </div>

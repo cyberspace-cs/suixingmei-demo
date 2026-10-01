@@ -123,7 +123,7 @@ export function PrepDialog(props: {
           <Link href="/plan" className="inline-flex h-12 items-center justify-center rounded-full px-5 text-sm text-ink/70 hover:text-ink">
             再看看方案
           </Link>
-          <button onClick={props.onStart} className={cn("btn-ink inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-medium")}>
+          <button onClick={props.onStart} className={cn("btn-ink inline-flex h-12 sm:flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-medium")}>
             准备好了，开始跟妆 <ArrowRight className="size-4" />
           </button>
         </div>

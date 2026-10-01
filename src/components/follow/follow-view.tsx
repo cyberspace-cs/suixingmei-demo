@@ -14,6 +14,7 @@ import { useRecognition, useSpeaker } from "@/hooks/use-voice";
 import { askAI, checkFrame } from "@/lib/api";
 import { parseCommand } from "@/lib/commands";
 import { LANDMARKS } from "@/lib/face-geometry";
+import { formatElapsed } from "@/lib/format";
 import { analyzeQuality, captureFrame } from "@/lib/local/image";
 import { minutesOfSteps, stepFocus } from "@/lib/looks";
 import { landmarkSetOf, useApp, useCurrentSession } from "@/lib/store";
@@ -30,11 +31,6 @@ import { PrepDialog } from "./prep-dialog";
 type Tab = "guide" | "check" | "chat";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
-
-export function formatElapsed(s: number) {
-  const m = Math.floor(s / 60);
-  return `${String(m).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
-}
 
 function firstOpenStep(p: PartPlan, done: string[]) {
   const i = p.steps.findIndex((s) => !done.includes(s.id));

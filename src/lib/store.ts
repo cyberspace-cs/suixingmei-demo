@@ -46,6 +46,7 @@ interface AppState {
   setSettings: (patch: Partial<Settings>) => void;
   rememberConsent: (sessionId?: string) => void;
   resetDemo: () => void;
+  clearHistory: () => void;
   clearAll: () => void;
 }
 
@@ -123,6 +124,7 @@ export const useApp = create<AppState>()(
           consentSessionId: undefined,
         });
       },
+      clearHistory: () => set({ sessions: [], currentId: undefined, consentSessionId: undefined }),
       clearAll: () =>
         set({
           seeded: true,
