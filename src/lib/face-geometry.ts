@@ -91,10 +91,20 @@ function shift(l: Landmarks, dx: number, dy: number): Landmarks {
   return out;
 }
 
+function scaled(l: Landmarks, k: number): Landmarks {
+  const out = {} as Landmarks;
+  for (const key of Object.keys(l) as LandmarkKey[]) out[key] = { x: Math.round(l[key].x * k), y: Math.round(l[key].y * k) };
+  return out;
+}
+
+/** 关键点按素材原图 864 × 1152 像素标注，这里换算到 768 × 1024 坐标系 */
+const NATIVE_TO_FACE = FACE_W / 864;
+const USER_FACE = scaled(USER, NATIVE_TO_FACE);
+
 export const LANDMARKS: Record<LandmarkSetId, Landmarks> = {
-  user: USER,
-  "ref-peach": REF_PEACH,
-  generic: shift(USER, -74, -40),
+  user: USER_FACE,
+  "ref-peach": scaled(REF_PEACH, NATIVE_TO_FACE),
+  generic: shift(USER_FACE, -34, 10),
 };
 
 export const PART_COLOR: Record<PartKey, string> = {
@@ -319,8 +329,60 @@ export function focusBox(part: PartKey | "face", L: Landmarks, aspect = 3 / 4): 
   return `${Math.round(x)} ${Math.round(y)} ${Math.round(w)} ${Math.round(h)}`;
 }
 
+/** 整脸取景：按容器宽高比保证额头到下巴完整可见 */
+export function faceFrame(L: Landmarks, aspect: number): string {
+  const top = L.forehead.y - 90;
+  const bottom = L.chin.y + 110;
+  let h = bottom - top;
+  let w = h * aspect;
+  if (w > FACE_W) {
+    w = FACE_W;
+    h = w / aspect;
+  }
+  const x = Math.max(0, Math.min(FACE_W - w, L.nose.x - w / 2));
+  const y = Math.max(0, Math.min(FACE_H - h, (top + bottom) / 2 - h / 2));
+  return `${Math.round(x)} ${Math.round(y)} ${Math.round(w)} ${Math.round(h)}`;
+}
+
 export function mirrorPoint(L: Landmarks, k: LandmarkKey): Pt {
   return { x: mirrorX(L, L[k].x), y: L[k].y };
+}
+
+export interface RevealLayer {
+  part: PartKey;
+  shape: ZoneShape;
+  mode: "show" | "hide";
+  alpha: number;
+  grow: number;
+}
+
+const DETAIL_PARTS: PartKey[] = ["contour", "brow", "eyeshadow", "eyeliner", "lashes", "blush", "lip"];
+const REVEAL_GROW: Record<PartKey, number> = {
+  base: 1,
+  contour: 1.3,
+  brow: 2.4,
+  eyeshadow: 1,
+  eyeliner: 4,
+  lashes: 6,
+  blush: 1,
+  lip: 1,
+};
+
+/**
+ * 演示画面的"逐部位上妆"遮罩：底妆显露整张妆后脸，未完成的细节部位先遮回素颜，
+ * 已完成的部位再逐个显露。SVG 镜面与截帧共用同一份图层，保证所见即所拍。
+ */
+export function revealLayers(parts: PartKey[], L: Landmarks, shape: FaceShape): RevealLayer[] {
+  const on = new Set(parts);
+  const layers: RevealLayer[] = [];
+  const push = (part: PartKey, mode: RevealLayer["mode"], alpha: number) =>
+    zonesFor(part, L, "adapted", shape).forEach((s) => layers.push({ part, shape: s, mode, alpha, grow: REVEAL_GROW[part] }));
+  if (on.has("base")) {
+    push("base", "show", 0.92);
+    DETAIL_PARTS.forEach((part) => push(part, "hide", 1));
+  }
+  DETAIL_PARTS.filter((part) => on.has(part)).forEach((part) => push(part, "show", 1));
+  return layers;
 }
 
 /** 用关键点近似 68 点，用于分析动画 */
