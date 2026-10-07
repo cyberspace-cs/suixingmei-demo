@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,16637,e=>{"use strict";let s=["base","contour","brow","eyeshadow","eyeliner","lashes","blush","lip"];e.s(["VARIANT_EDIT_VERSION",0,"masked-removal-v2","selectedPreviewParts",0,e=>s.filter(s=>"base"===s||e.includes(s))])}]);
